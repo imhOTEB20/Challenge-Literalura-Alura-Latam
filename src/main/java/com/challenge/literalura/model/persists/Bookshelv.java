@@ -10,15 +10,18 @@ public class Bookshelv {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     private Book book;
 
     private String content;
 
-    public Bookshelv(String content) {
+    public Bookshelv(String content, Book book) {
         this.content = content;
+        this.book = book;
     }
+
+    public Bookshelv() {}
 
     public Long getId() {
         return id;

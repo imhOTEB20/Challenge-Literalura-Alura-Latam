@@ -9,16 +9,20 @@ public class Format {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "format_id")
     private Long id;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     private Book book;
+
     private String code;
     private String url;
 
-    public Format(String code, String url) {
+    public Format(String code, String url, Book book) {
         this.code = code;
         this.url = url;
+        this.book = book;
     }
+    public Format() {}
 
     public Long getId() {
         return id;

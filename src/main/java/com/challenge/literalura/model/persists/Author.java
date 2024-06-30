@@ -1,5 +1,6 @@
 package com.challenge.literalura.model.persists;
 
+import com.challenge.literalura.model.consumption.AuthorData;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -14,6 +15,14 @@ public class Author extends Person{
 
     public Author(String name, Integer birth_year, Integer death_year) {
         super(name, birth_year, death_year);
+    }
+
+    public Author(AuthorData data) {
+        super(data.name(), data.birth_year(), data.death_year());
+    }
+
+    public Author() {
+        super();
     }
 
     public Set<Book> getBooks() {

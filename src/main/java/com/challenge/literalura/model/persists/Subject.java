@@ -10,15 +10,18 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     private Book book;
 
     private String content;
 
-    public Subject(String content) {
+    public Subject(String content, Book book) {
         this.content = content;
+        this.book = book;
     }
+
+    public Subject() {}
 
     public Long getId() {
         return id;

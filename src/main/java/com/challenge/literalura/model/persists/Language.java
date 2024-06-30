@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "languages")
 public class Language {
     @Id
     @Column(name = "languages_id")
@@ -20,6 +22,8 @@ public class Language {
     public Language(String type) {
         this.type = type;
     }
+
+    public Language() {}
 
     public Long getId() {
         return id;

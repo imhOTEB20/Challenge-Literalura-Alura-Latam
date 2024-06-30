@@ -1,9 +1,12 @@
 package com.challenge.literalura.model.persists;
 
+import com.challenge.literalura.model.consumption.BookData;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "books")
@@ -13,9 +16,10 @@ public class Book {
     @Column(name = "book_id")
     private Long id;
 
+    @Column(unique = true)
     private String title;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "books_authors",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -23,7 +27,7 @@ public class Book {
     )
     private Set<Author> authors = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "books_translators",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -37,7 +41,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private Set<Bookshelv> bookshelves = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "books_languages",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -45,7 +49,7 @@ public class Book {
     )
     private Set<Language> languages = new HashSet<>();
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book")
     private Set<Format> formats = new HashSet<>();
 
     private Boolean copyright;
@@ -58,6 +62,45 @@ public class Book {
         this.media_type = media_type;
         this.download_count = download_count;
     }
+
+    public Book(BookData data) {
+        this.title = data.title();
+        this.copyright =  data.copyright();
+        this.media_type = data.media_type();
+        this.download_count = data.download_count();
+
+        this.authors = data.authors().stream()
+                .map(Author::new)
+                .collect(Collectors.toSet());
+
+        this.translators =  data.translators().stream()
+                .map(Translator::new)
+                .collect(Collectors.toSet());
+
+        this.subjects =  data.subjects().stream()
+                .map(content -> {
+                    return new Subject(content, this);
+                })
+                .collect(Collectors.toSet());
+
+        this.bookshelves = data.bookshelves().stream()
+                .map(content -> {
+                    return new Bookshelv(content, this);
+                })
+                .collect(Collectors.toSet());
+
+        this.languages = data.languages().stream()
+                .map(Language::new)
+                .collect(Collectors.toSet());
+
+        this.formats = data.formats().keySet().stream()
+                .map(code -> {
+                    return new Format(code, data.formats().get(code), this);
+                })
+                .collect(Collectors.toSet());
+    }
+
+    public Book(){}
 
     public Long getId() {
         return id;
@@ -138,4 +181,6 @@ public class Book {
     public void setFormats(Set<Format> formats) {
         this.formats = formats;
     }
+
+
 }
