@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,12 +39,7 @@ public class BookService {
     @Transactional
     public void saveBook(Book book) {
         Optional<Book> bookOnDB = bookRepository.findByTitle(book.getTitle());
-        if (bookOnDB.isPresent()) {
-            Book currentBook = bookOnDB.get();
-            updateBook(currentBook, book);
-            bookRepository.saveAndFlush(currentBook);
-        }
-        else {
+        if (bookOnDB.isEmpty()) {
             Set<Author> newAuthors = new HashSet<>(book.getAuthors());
             Set<Translator> newTranslators = new HashSet<>(book.getTranslators());
             Set<Language> newLanguages = new HashSet<>(book.getLanguages());
@@ -51,30 +47,17 @@ public class BookService {
             Set<Bookshelv> newBookshelves = new HashSet<>(book.getBookshelves());
             Set<Format> newFormats = new HashSet<>(book.getFormats());
 
-            book.setAuthors(checkAuthors(newAuthors));
-            book.setLanguages(checkLanguages(newLanguages));
+            book.setAuthors(checkAuthors(newAuthors, book));
+            book.setLanguages(checkLanguages(newLanguages, book));
             book.setSubjects(checkSubject(newSubjects));
             book.setFormats(checkFormat(newFormats));
-            book.setTranslators(checkTranslators(newTranslators));
+            book.setTranslators(checkTranslators(newTranslators, book));
             book.setBookshelves(checkBookShelves(newBookshelves));
             bookRepository.save(book);
         }
     }
 
-    private void updateBook(Book currentBook, Book newBook) {
-        currentBook.setCopyright(newBook.getCopyright());
-        currentBook.setMedia_type(newBook.getMedia_type());
-        currentBook.setDownload_count(newBook.getDownload_count());
-
-        currentBook.setAuthors(checkAuthors(newBook.getAuthors()));
-        currentBook.setTranslators(checkTranslators(newBook.getTranslators()));
-        currentBook.setBookshelves(checkBookShelves(newBook.getBookshelves()));
-        currentBook.setFormats(checkFormat(newBook.getFormats()));
-        currentBook.setSubjects(checkSubject(newBook.getSubjects()));
-        currentBook.setLanguages(checkLanguages(newBook.getLanguages()));
-    }
-
-    private Set<Author> checkAuthors(Set<Author> authors) {
+    private Set<Author> checkAuthors(Set<Author> authors, Book book) {
         return authors.stream()
                 .map(author -> {
                     Optional<Author> authorOnDB = authorRepository.findByName(author.getName());
@@ -82,6 +65,7 @@ public class BookService {
                         Author currentAuthor = authorOnDB.get();
                         currentAuthor.setBirth_year(author.getBirth_year());
                         currentAuthor.setDeath_year(author.getDeath_year());
+                        currentAuthor.getBooks().add(book);
                         return authorRepository.save(currentAuthor);
                     }
                     else return authorRepository.save(author);
@@ -89,14 +73,13 @@ public class BookService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<Language> checkLanguages(Set<Language> languages) {
+    private Set<Language> checkLanguages(Set<Language> languages, Book book) {
         return languages.stream()
                 .map(language -> {
                     Optional<Language> languageOnDB = languageRepository.findByType(language.getType());
                     if(languageOnDB.isPresent()) {
                         Language currentLanguage = languageOnDB.get();
-                        currentLanguage.setBooks(language.getBooks());
-
+                        currentLanguage.getBooks().add(book);
                         return languageRepository.save(currentLanguage);
                     }
                     else {
@@ -106,7 +89,7 @@ public class BookService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<Translator> checkTranslators(Set<Translator> translators) {
+    private Set<Translator> checkTranslators(Set<Translator> translators, Book book) {
         return translators.stream()
                 .map(translator -> {
                     Optional<Translator> translatorOnDB = translatorRepository.findByName(translator.getName());
@@ -114,6 +97,7 @@ public class BookService {
                         Translator currentTranslator = translatorOnDB.get();
                         currentTranslator.setBirth_year(translator.getBirth_year());
                         currentTranslator.setDeath_year(translator.getDeath_year());
+                        currentTranslator.getBooks().add(book);
                         return translatorRepository.save(currentTranslator);
                     }
                     return translatorRepository.save(translator);
@@ -163,6 +147,14 @@ public class BookService {
                 })
                 .collect(Collectors.toSet());
     }
+    /*
+    public Optional<Book> findBookByTitleOnWeb(String title) {
+    }
 
+    public Optional<Book> findBookByTitleOnRegister(String title) {
+    }
 
+    public List<Book> findTop5ByDownloadCount() {
+    }
+    */
 }

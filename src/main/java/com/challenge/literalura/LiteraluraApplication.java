@@ -21,7 +21,7 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		String json = APIConsumption.obtenerDatos("https://gutendex.com/books/?search=Don%20Quijote%20de%20la%20Mancha");
+		String json = APIConsumption.obtenerDatos("https://gutendex.com/books/?search=red");
 		var convertData = new ConvertData();
 
 		var responseData = convertData.getData(json, ResponseData.class);

@@ -16,8 +16,8 @@ public record BookData(
         List<String> bookshelves,
         List<String> languages,
         Boolean copyright,
-        String media_type,
+        @JsonAlias("media_type") String mediaType,
         Map<String,String> formats,
-        Long download_count
+        @JsonAlias("download_count") Long downloadCount
 ) {
 }

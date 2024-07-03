@@ -4,7 +4,6 @@ import com.challenge.literalura.model.consumption.BookData;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,21 +52,21 @@ public class Book {
     private Set<Format> formats = new HashSet<>();
 
     private Boolean copyright;
-    private String media_type;
-    private Long download_count;
+    private String mediaType;
+    private Long downloadCount;
 
-    public Book(String title, Boolean copyright, String media_type, Long download_count) {
+    public Book(String title, Boolean copyright, String mediaType, Long downloadCount) {
         this.title = title;
         this.copyright = copyright;
-        this.media_type = media_type;
-        this.download_count = download_count;
+        this.mediaType = mediaType;
+        this.downloadCount = downloadCount;
     }
 
     public Book(BookData data) {
         this.title = data.title();
         this.copyright =  data.copyright();
-        this.media_type = data.media_type();
-        this.download_count = data.download_count();
+        this.mediaType = data.mediaType();
+        this.downloadCount = data.downloadCount();
 
         this.authors = data.authors().stream()
                 .map(Author::new)
@@ -118,20 +117,20 @@ public class Book {
         this.copyright = copyright;
     }
 
-    public String getMedia_type() {
-        return media_type;
+    public String getMediaType() {
+        return mediaType;
     }
 
-    public void setMedia_type(String media_type) {
-        this.media_type = media_type;
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
-    public Long getDownload_count() {
-        return download_count;
+    public Long getDownloadCount() {
+        return downloadCount;
     }
 
-    public void setDownload_count(Long download_count) {
-        this.download_count = download_count;
+    public void setDownloadCount(Long downloadCount) {
+        this.downloadCount = downloadCount;
     }
 
     public Set<Author> getAuthors() {
