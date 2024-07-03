@@ -63,8 +63,8 @@ public class BookService {
                     Optional<Author> authorOnDB = authorRepository.findByName(author.getName());
                     if(authorOnDB.isPresent()) {
                         Author currentAuthor = authorOnDB.get();
-                        currentAuthor.setBirth_year(author.getBirth_year());
-                        currentAuthor.setDeath_year(author.getDeath_year());
+                        currentAuthor.setBirthYear(author.getBirthYear());
+                        currentAuthor.setDeathYear(author.getDeathYear());
                         currentAuthor.getBooks().add(book);
                         return authorRepository.save(currentAuthor);
                     }
@@ -95,8 +95,8 @@ public class BookService {
                     Optional<Translator> translatorOnDB = translatorRepository.findByName(translator.getName());
                     if(translatorOnDB.isPresent()) {
                         Translator currentTranslator = translatorOnDB.get();
-                        currentTranslator.setBirth_year(translator.getBirth_year());
-                        currentTranslator.setDeath_year(translator.getDeath_year());
+                        currentTranslator.setBirthYear(translator.getBirthYear());
+                        currentTranslator.setDeathYear(translator.getDeathYear());
                         currentTranslator.getBooks().add(book);
                         return translatorRepository.save(currentTranslator);
                     }
@@ -147,14 +147,28 @@ public class BookService {
                 })
                 .collect(Collectors.toSet());
     }
-    /*
-    public Optional<Book> findBookByTitleOnWeb(String title) {
-    }
 
     public Optional<Book> findBookByTitleOnRegister(String title) {
+        List<Book> books = bookRepository.findContainsTitle(title.toLowerCase());
+        Optional<Book> book = Optional.empty();
+        if (!books.isEmpty()) {
+            book = Optional.of(books.get(0));
+        }
+        return book;
     }
 
     public List<Book> findTop5ByDownloadCount() {
+        return bookRepository.findByDownloadCount().stream()
+                .limit(5)
+                .collect(Collectors.toList());
     }
-    */
+
+    public List<Book> allBookOnRegister() {
+        return bookRepository.findByDownloadCount();
+    }
+
+    public List<Book> booksFromLanguage(String type) {
+        return bookRepository.findByLanguage(type);
+    }
+
 }

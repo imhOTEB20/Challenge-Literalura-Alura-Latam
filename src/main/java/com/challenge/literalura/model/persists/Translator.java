@@ -11,15 +11,15 @@ import java.util.Set;
 @AttributeOverride(name = "id", column = @Column(name = "translator_id"))
 public class Translator extends Person{
 
-    @ManyToMany(mappedBy = "translators")
+    @ManyToMany(mappedBy = "translators", fetch = FetchType.EAGER)
     private Set<Book> books = new HashSet<>();
 
-    public Translator(String name, Integer birth_year, Integer death_year) {
-        super(name, birth_year, death_year);
+    public Translator(String name, Integer birthYear, Integer deathYear) {
+        super(name, birthYear, deathYear);
     }
 
     public Translator(TranslatorData data) {
-        super(data.name(), data.birth_year(), data.death_year());
+        super(data.name(), data.birthYear(), data.birthYear());
     }
 
     public Translator() {

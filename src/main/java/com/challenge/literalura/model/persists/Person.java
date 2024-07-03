@@ -11,13 +11,13 @@ public abstract class Person {
     @Column(unique = true)
     private String name;
 
-    private Integer birth_year;
-    private Integer death_year;
+    private Integer birthYear;
+    private Integer deathYear;
 
-    public Person(String name, Integer birth_year, Integer death_year) {
+    public Person(String name, Integer birthYear, Integer deathYear) {
         this.name = name;
-        this.birth_year = birth_year;
-        this.death_year = death_year;
+        this.birthYear = birthYear;
+        this.deathYear = deathYear;
     }
     public Person() {}
 
@@ -29,19 +29,19 @@ public abstract class Person {
         return name;
     }
 
-    public void setBirth_year(Integer birth_year) {
-        this.birth_year = birth_year;
+    public void setBirthYear(Integer birthYear) {
+        this.birthYear = birthYear;
     }
 
-    public void setDeath_year(Integer death_year) {
-        this.death_year = death_year;
+    public void setDeathYear(Integer deathYear) {
+        this.deathYear = deathYear;
     }
 
-    public Integer getBirth_year() {
-        return birth_year;
+    public Integer getBirthYear() {
+        return birthYear;
     }
 
-    public Integer getDeath_year() {
-        return death_year;
+    public Integer getDeathYear() {
+        return deathYear;
     }
 }

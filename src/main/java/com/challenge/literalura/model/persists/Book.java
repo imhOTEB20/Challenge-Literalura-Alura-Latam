@@ -18,7 +18,8 @@ public class Book {
     @Column(unique = true)
     private String title;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+    fetch = FetchType.EAGER)
     @JoinTable(
             name = "books_authors",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -26,7 +27,8 @@ public class Book {
     )
     private Set<Author> authors = new HashSet<>();
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            fetch = FetchType.EAGER)
     @JoinTable(
             name = "books_translators",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -34,13 +36,16 @@ public class Book {
     )
     private Set<Translator> translators = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book",
+            fetch = FetchType.EAGER)
     private Set<Subject> subjects = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book",
+            fetch = FetchType.EAGER)
     private Set<Bookshelv> bookshelves = new HashSet<>();
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            fetch = FetchType.EAGER)
     @JoinTable(
             name = "books_languages",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -48,7 +53,8 @@ public class Book {
     )
     private Set<Language> languages = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book",
+            fetch = FetchType.EAGER)
     private Set<Format> formats = new HashSet<>();
 
     private Boolean copyright;
@@ -181,5 +187,24 @@ public class Book {
         this.formats = formats;
     }
 
-
+    @Override
+    public String toString() {
+        return """
+                ----- LIBRO -----
+                Titulo: %s
+                Autor: %s
+                Idioma: %s
+                Numero de descargas: %d
+                ----------------"""
+                .formatted(
+                        this.getTitle(),
+                        this.authors.stream()
+                                .map(Author::getName)
+                                .collect(Collectors.joining("; ")),
+                        this.languages.stream()
+                                .map(Language::getType)
+                                .collect(Collectors.joining("; ")),
+                        this.getDownloadCount()
+                );
+    }
 }

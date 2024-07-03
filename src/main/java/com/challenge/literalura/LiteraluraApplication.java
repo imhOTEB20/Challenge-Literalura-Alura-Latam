@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LiteraluraApplication implements CommandLineRunner {
 	@Autowired
-	BookService bookService;
+	private App app;
 
 	public static void main(String[] args) {
 		SpringApplication.run(LiteraluraApplication.class, args);
@@ -21,15 +21,6 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		String json = APIConsumption.obtenerDatos("https://gutendex.com/books/?search=red");
-		var convertData = new ConvertData();
-
-		var responseData = convertData.getData(json, ResponseData.class);
-
-		System.out.println(responseData);
-
-		Book libroBuscado = new Book(responseData.results().get(0));
-
-		bookService.saveBook(libroBuscado);
+		app.start();
 	}
 }
